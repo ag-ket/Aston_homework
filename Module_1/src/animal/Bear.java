@@ -1,3 +1,4 @@
+
 package animal;
 
 public class Bear extends Mammal implements Furable{

@@ -1,3 +1,4 @@
+
 package vehicle;
 
 public class Boat extends Vehicle implements Propellerable, CargoTransportation {

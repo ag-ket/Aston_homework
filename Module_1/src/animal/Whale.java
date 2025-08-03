@@ -1,3 +1,4 @@
+
 package animal;
 
 public class Whale extends Mammal implements Liwable{

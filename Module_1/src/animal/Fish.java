@@ -1,3 +1,4 @@
+
 package animal;
 
 public class Fish extends Animal implements Liwable {

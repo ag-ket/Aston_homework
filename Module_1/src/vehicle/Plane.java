@@ -1,3 +1,4 @@
+
 package vehicle;
 
 public class Plane extends Vehicle implements Wheelable, Wingable, Propellerable, CargoTransportation {
