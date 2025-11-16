@@ -1,0 +1,70 @@
+version: '3'
+
+services:
+  config-server:
+    image: spring-cloud-config-server
+    ports:
+      - "8888:8888"
+    networks:
+      - app-network
+
+  eureka-server:
+    image: spring-cloud-starter-netflix-eureka-server
+    ports:
+      - "8761:8761"
+    networks:
+      - app-network
+    environment:
+      - SPRING_CONFIG_IMPORT=configserver:http://config-server:8888
+      - EUREKA_CLIENT_REGISTER_WITH_EUREKA=true
+      - EUREKA_CLIENT_FETCH_REGISTRY=false
+    depends_on:
+      - config-server
+
+  api-gateway:
+    image: spring-cloud-starter-gateway-server-webmvc
+    ports:
+      - "8080:8080"
+    networks:
+      - app-network
+    environment:
+      - SPRING_CONFIG_IMPORT=configserver:http://config-server:8888
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-server:8761/eureka/
+    depends_on:
+      - config-server
+      - eureka-server
+  postgres:
+    image: postgres:13
+    networks:
+      - app-network
+    environment:
+      POSTGRES_DB: endbase
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgresisevil
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  user-service:
+    image: UserService
+    ports:
+      - "8001:8001"
+    networks:
+      - app-network
+    environment:
+      - SPRING_CONFIG_IMPORT=configserver:http://config-server:8888
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-server:8761/eureka/
+    depends_on:
+      - config-server
+      - eureka-server
+      - postgres
+
+  notfication-service:
+    image: KafkaMessageService
+    ports:
+      - "8002:8002"
+    networks:
+      - app-network
+    environment:
+      - SPRING_CONFIG_IMPORT=configserver:http://config-server:8888
+      - EUREKA_CLIENT_SERVICE_
+
